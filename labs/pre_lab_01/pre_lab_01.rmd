@@ -115,7 +115,7 @@ In the space below, write the data type for the "id" column and the "seats" colu
 head(umd_courses)
 ```
 
-In the space below, write the name of the business from the first row of the "name" column. **Answer**
+In the space below, write the name of the business from the first row of the "title" column. **Answer** The name of the business is 'Directed Research.'
 
 ### Task 8: Explore data with interactive dataframe
 
@@ -141,6 +141,8 @@ Describe what you think each line of this code is doing below, based on the resu
 
 **Answer**
 
+It is taking the umd_courses variable and breaking it down into terms. Then, for each term, it is showing how many classes correspond to that term.
+
 ### Task 10: Adding arrange to sort the data
 
 **Task** Run the following codeblock:
@@ -155,6 +157,8 @@ umd_courses |>
 ```
 
 Compared to the previous codeblock, what has changed and how did that affect the result? **Answer**
+
+Taking the UMD courses, grouping by term, then arranging them by the number of classes in descending order from most to least classes.
 
 ### Task 11: Grouping by multiple columns
 
@@ -171,7 +175,7 @@ umd_courses |>
 
 Compared to the previous codeblock, how did the output change and what in the code changed it?
 
-**Answer**
+**Answer** For this output, we are grouping by the number of classes in each department by term.
 
 ### Task 12: Other summary functions
 
@@ -187,7 +191,7 @@ umd_courses |>
   arrange(desc(total_seats))
 ```
 
-Compared to the previous codeblock, what has changed and how did that affect the result? **Answer**
+Compared to the previous codeblock, what has changed and how did that affect the result? **Answer** For this output, we are instead coding the number of classes per term, and adding on the total number of seats for those classes.
 
 ### Task 13: different kinds of summarizations
 
@@ -205,7 +209,7 @@ umd_courses |>
   arrange(desc(total_seats))
 ```
 
-Compared to the previous codeblock, what has changed and how did that affect the result? What do the top terms have in common? **Answer**
+Compared to the previous codeblock, what has changed and how did that affect the result? What do the top terms have in common? **Answer** For this output, we added mean and median seat totals for each class. The classes that have the most total seats tend to have the most mean seats, but not necessarily median seats.
 
 ### Task 14: more aggregations
 
@@ -219,15 +223,15 @@ umd_courses |>
     total_seats = sum(seats),
     mean_seats = mean(seats),
     median_seats = median(seats),
-    # add minimum seats here
-    # add maximum seats here
+    minimum_seats = (min(seats)),
+    maximum_seats = (max(seats)),
   ) |>
-  arrange(desc(total_seats))
+  arrange(desc(count_classes))
 ```
 
 Compared to the previous codeblock, what has changed and how did that affect the result? How is the data sorted?
 
-**Answer**
+**Answer** For this output, we added minimum and maximum seats for each of the classes to our table. The classes with the most total seats also generally had the most maximum seats.
 
 ### Task 12: Questions
 
@@ -235,8 +239,8 @@ No code here; I want you to provide three questions that this data suggests to y
 
 **Answer**
 
-1.  
+1.  Why do classes like cyber security not have a minimum amount of seats? And if so, does this mean that they are a selective class/course, or is there not enough interest for something like this? 
 
-2.  
+2. Carillon Communities only has 3 total seats, so what exactly is this department, and why does it have so few seats?
 
-3.  
+3.  The School of Music has the second-most classes offered but only 62,351 total seats, much less than the Business and Management School above it. Given this, there must be more specialized, niche courses in this department, so what are some of the classes that the School of Music offers?
