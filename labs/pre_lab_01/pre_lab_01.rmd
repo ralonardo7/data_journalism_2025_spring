@@ -244,3 +244,8 @@ No code here; I want you to provide three questions that this data suggests to y
 2. Carillon Communities only has 3 total seats, so what exactly is this department, and why does it have so few seats?
 
 3.  The School of Music has the second-most classes offered but only 62,351 total seats, much less than the Business and Management School above it. Given this, there must be more specialized, niche courses in this department, so what are some of the classes that the School of Music offers?
+
+```{r}
+theatre_seats_15 <- umd_courses |> filter(department == "Theatre") |> filter(seats >= 15)
+print(theatre_seats_15)
+```
