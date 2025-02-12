@@ -92,6 +92,7 @@ And now we only have two columns of data for whatever analysis we might want to 
 Notice that we made a new variable to hold the result. Why is that important?
 
 **Answer**
+This is important because it preserves the original data set. It also allows for improved readability and you can perform operations on the filtered data set without affecting other analyses.
 
 ### Task 6: Combining filters
 
@@ -126,6 +127,8 @@ nrow(and_theatre_seats_15)
 ```
 
 **Answer**
+
+54000
 
 When it comes to filters, OR is additive; AND is restrictive.
 
@@ -169,6 +172,7 @@ head(maryland_expenses)
 ```
 
 **Answer:**
+The change in the expenditure_date column is that it went from month, day, year to year, month, day.
 
 Lubridate has functions for basically any type of character date format: mdy, ymd, even datetimes like ymd_hms.
 
@@ -205,6 +209,7 @@ So the month of June 2022 had the most expenditures by far in this data.
 Describe the values in the new `month` column - what do you think is going on there?
 
 **Answer**
+R is sorting the values of each month based upon the total expenditures from that month, then arranging them in descending order. It's clear that many of the 2022 months saw more expenditures.
 
 ### Task 10: Mutate
 
@@ -235,6 +240,7 @@ general_22 <- general_22 |>
 Describe what you think this code is doing below.
 
 **Answer**
+This code is adding a total vote count and calculating the share of votes received by Wes Moore in each observation. 
 
 ### Task 11: Better percentage calculation
 
@@ -264,6 +270,7 @@ general_22 <- general_22 |>
 How did the answer change from the previous task, and why?
 
 **Answer**
+The difference is that in the last task, we can now see the locations where Wes Moore performed the best because it's in descending order, whereas perviously it was in an unordered state.
 
 ### Task 13: Mutate with ordering, part 2
 
@@ -278,6 +285,7 @@ general_22 |>
 Is this a more interesting or useful answer? Why?
 
 **Answer**
+It could be. Now it shows the locations where Wes Moore was considered unfavorably, which may speak more to the political affiliations of various locations in Maryland.
 
 ### Task 14: Standardize existing data using mutate
 
@@ -302,6 +310,9 @@ standardized_maryland_expenses <- maryland_expenses |>
 
 **Answer**
 
+Chat GPT question: "What are some tidyverse functions similar to str_to_upper, and what do they do?"
+Answer: str_to_lower, which converts all characters in a string to lowercase, and str_to_title, which converts the first letter of each to word to uppercase while keeping the rest lowercase.
+
 There are lots of potential uses for standardization - addresses, zip codes, anything that can be misspelled or abbreviated.
 
 ### Task 15: Create a new column using case_when
@@ -311,6 +322,7 @@ Mutate is even more useful when combined with some additional functions. Let's k
 **Task** Run the following code and look at the output. Then write a sentence or two describing what you think the mutate statement is doing step by step.
 
 **Answer**
+The mutate statement is creating a new column called "state" in the "maryland_expenses" data set. It allows for each expense entry to be tagged with a corresponding state abbreviation.
 
 ```{r}
 maryland_expenses_with_state <- maryland_expenses |>
@@ -346,6 +358,7 @@ maryland_expenses_with_state |>
 Does this answer make sense to you? Why or why not?
 
 **Answer**
+Yes, this answer makes sense to me, as it details the list of states with the most total expenses to least amount of total expenses, listed in descending order. Therefore, it would make sense that Maryland is at the top.
 
 Mutate is there to make your data more useful and to make it easier for you to ask more and better questions of it.
 
@@ -355,8 +368,8 @@ Now that you have seen how to use mutate, filtering and dates, give me three que
 
 **Answer**
 
-1.  
+1. Which Journalism courses are offered in 2025, and how many seats are available for each?
 
-2.  
+2. How many UMD courses were offered in Fall 2023, and how does that compare to the previous semester?
 
-3.  
+3. Which month had the highest total political expenditures, and how much was spent?
