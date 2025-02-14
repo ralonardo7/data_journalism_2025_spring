@@ -32,31 +32,110 @@ maryland_expenses <- read_csv("data/maryland_expenses.csv")
 
 ## Answer questions
 
-**Q1.** How many departments have offered the courses with "Climate" in the title and at least one seat? Which department has offered the most? **A1.**
+**Q1.** How many departments have offered the courses with "Climate" in the title and at least one seat? Which department has offered the most?
+
+**A1.** \
+
+27 different departments have offered the courses with "Climate in the title and at least one seat. Atmospheric and Oceanic Science has the most courses with those requirements.
 
 ```{r}
+climate_courses <- umd_courses |>
+  filter(str_detect(title, " Climate ") & seats > 0)
+num_departments <- climate_courses |>
+  distinct(department) |>
+  nrow()
+top_department <- climate_courses |>
+  count(department, sort = TRUE) |>
+  slice(1)
+list(num_departments = num_departments, top_department = top_department)
 ```
 
-**Q2.** Of the departments listed in A1, which one is the most interesting to you, and why? **A2.**
+**Q2.** Of the departments listed in A1, which one is the most interesting to you, and why?
+
+**A2.**
+
+The department listed in A1 that was most interesting was that there were both history and journalism classes that had "Climate" in the name. This was interesting because I expected solely science-related departments to be offering courses related to climate and climate change.
 
 **Q3** Which departments offered the most courses in the Fall 2024 term? And which departments in that term have at least one syllabus posted? Answer both of those questions and then compare the top five departments - how are they different?
 
 **A3.**
 
+Business and Management offered the most courses in Fall of 2024, with 174 courses. 134 departments in that term have a syllabus. The top five departments, also including School of Music, Information Studies, English and Teaching and Learning, Policy and Leadership, all have a syllabus. They are different in the sense that they're completely different subjects, as music, policy, teaching and business are all quite contrasting fields, but are also broad enough to have a large number of courses.
+
 ```{r}
+fall_2024_courses <- umd_courses |>
+  filter(term == 202408)
+top_departments_fall_2024 <- fall_2024_courses |>
+  count(department, sort = TRUE)
+departments_with_syllabus <- fall_2024_courses |>
+  filter(syllabus_count > 0) |>
+  distinct(department) |>
+  pull(department)
+top_five_departments <- top_departments_fall_2024 |>
+  slice(1:5)
+top_five_with_syllabus <- top_five_departments |>
+  mutate(has_syllabus = department %in% departments_with_syllabus)
+list(
+  top_departments_fall_2024 = top_departments_fall_2024,
+  departments_with_syllabus = departments_with_syllabus,
+  top_five_comparison = top_five_with_syllabus
+)
 ```
 
-**Q4.** Using the Maryland campaign expenses data, change the datatype of the expenditure_date column so that it is a date and not a chr, saving the result as a new dataframe. Then create a new column for the month based on expenditure_date. Then write code that shows total amount spent each month by Wes Moore's committee (you'll need to search the data to find the exact name, and we're not looking in payee_name). Write a sentence describing the pattern of spending over time. **A4.**
+**Q4.** Using the Maryland campaign expenses data, change the datatype of the expenditure_date column so that it is a date and not a chr, saving the result as a new dataframe. Then create a new column for the month based on expenditure_date. Then write code that shows total amount spent each month by Wes Moore's committee (you'll need to search the data to find the exact name, and we're not looking in payee_name). Write a sentence describing the pattern of spending over time.
+
+**A4.**
+
+Based upon the data that's been produced, there doesn't seem to be a particular trend base upon the month. However, he easily spent the most in October, which makes sense considering elections occur in November. He also spent a lot in June and July.
 
 ```{r}
+maryland_expenses_clean <- maryland_expenses %>%
+  mutate(
+    expenditure_date = as.Date(expenditure_date, format = "%Y-%m-%d"), 
+    month = month(expenditure_date, label = TRUE, abbr = TRUE) 
+  )
+head(maryland_expenses_clean)
+wes_moore_monthly_expenses <- maryland_expenses_clean |>
+  filter(committee_name == "Moore  Wes For Maryland") |>
+  group_by(month) |>
+  summarise(total_spent = sum(amount, na.rm = TRUE)) |>
+  arrange(month)
+print(wes_moore_monthly_expenses)
 ```
 
-**Q5.** Using case_when(), create a column in the Maryland expenses data called `spending_location` indicating whether each record spent money in Maryland or outside Maryland. For records that are in Maryland, make the new column's value "In-state" and for all others, make it "Out of state". Then write code that shows the total amount of money spent in each category and describe the results. You can do this in one statement or break it up into two statements (saving the new column to your dataframe). **A5**
+**Q5.** Using case_when(), create a column in the Maryland expenses data called `spending_location` indicating whether each record spent money in Maryland or outside Maryland. For records that are in Maryland, make the new column's value "In-state" and for all others, make it "Out of state". Then write code that shows the total amount of money spent in each category and describe the results. You can do this in one statement or break it up into two statements (saving the new column to your dataframe).
+
+**A5.**
+
+The results of this code clearly show that there is more in-state spending vs. out-of-state spending. In fact, it's roughly 25 million more in-state vs. out-of-state.
 
 ```{r}
+maryland_expenses_clean <- maryland_expenses_clean |>
+  mutate(
+    spending_location = case_when(
+      str_detect(address, "Maryland") ~ "In-state",
+      TRUE ~ "Out of state"
+    )
+  )
+head(maryland_expenses_clean)
+spending_summary <- maryland_expenses_clean |>
+  group_by(spending_location) |>
+  summarise(total_spent = sum(amount, na.rm = TRUE)) |>
+  arrange(desc(total_spent))
+print(spending_summary)
 ```
 
-**Q6.** Choose your own adventure: using either the UMD courses or campaign expenses data, ask and answer a question that is different than the previous ones. You can use one of the ones you provided in the pre_lab. **A6.**
+**Q6.** Choose your own adventure: using either the UMD courses or campaign expenses data, ask and answer a question that is different than the previous ones. You can use one of the ones you provided in the pre_lab.
+
+**A6.**
+
+My question is: What category has the highest total spending? Through my code, I found that media had the highest total spending, with over 30 million spent. This makes sense, as it's the main way to reach the public in our society.
 
 ```{r}
+highest_spending_category <- maryland_expenses_clean |>
+  group_by(expense_category) |>
+  summarise(total_spent = sum(amount, na.rm = TRUE)) |>
+  arrange(desc(total_spent)) |>
+  slice(1)
+print(highest_spending_category)
 ```
