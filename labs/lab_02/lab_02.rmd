@@ -34,7 +34,7 @@ maryland_expenses <- read_csv("data/maryland_expenses.csv")
 
 **Q1.** How many departments have offered the courses with "Climate" in the title and at least one seat? Which department has offered the most?
 
-**A1.** \
+**A1.**\
 
 27 different departments have offered the courses with "Climate in the title and at least one seat. Atmospheric and Oceanic Science has the most courses with those requirements.
 
