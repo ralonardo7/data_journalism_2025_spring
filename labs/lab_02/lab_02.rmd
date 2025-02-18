@@ -40,7 +40,7 @@ maryland_expenses <- read_csv("data/maryland_expenses.csv")
 
 ```{r}
 climate_courses <- umd_courses |>
-  filter(str_detect(title, " Climate ") & seats > 0)
+  filter(str_detect(title, "Climate") & seats > 0)
 num_departments <- climate_courses |>
   distinct(department) |>
   nrow()
@@ -89,7 +89,7 @@ list(
 Based upon the data that's been produced, there doesn't seem to be a particular trend base upon the month. However, he easily spent the most in October, which makes sense considering elections occur in November. He also spent a lot in June and July.
 
 ```{r}
-maryland_expenses_clean <- maryland_expenses %>%
+maryland_expenses_clean <- maryland_expenses |>
   mutate(
     expenditure_date = as.Date(expenditure_date, format = "%Y-%m-%d"), 
     month = month(expenditure_date, label = TRUE, abbr = TRUE) 
