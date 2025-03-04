@@ -20,9 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 options(scipen=999)
 
 # Load the tidyverse, plus any other packages you will need to clean data and work with dates.
-library(tidyverse)
-library(lubridate)
-library(janitor)
+
 ```
 
 ## Get Our PDF
@@ -44,56 +42,32 @@ From there, you will need to read in the data, and add or fix headers if necessa
 You will need to read in and clean up the data so that it can be used for analysis. By "clean" I mean the column headers should not contain spaces and they should have meaningful names, not "x1" or something similar. How you do that is up to you, but you can use select() with or without the minus sign to include or exclude certain columns. You also can use the `rename` function to, well, rename columns. Importantly, you'll need to ensure that any columns containing a date actually have a date datatype. Our friend `lubridate` can help with this.
 
 ```{r}
-BaltimoreData_Sheet1 <- read_csv("~/Documents/GitHub/data_journalism_2025_spring/labs/BaltimoreData - Sheet1.csv") |>
-  clean_names() |>
-  select(-x6) |>
-  rename(date = dat_format_1, time = dat_format_2) |>
-  mutate(date = mdy(date))  # Convert date column
 ```
 
 ## Answer questions
 
 Q1. Write code to generate the number of calls that occurred on each date. Which date in 2022 had the most overdose calls, and how many? Look at the total number of rows in your result and explore the range of dates - based on your result, do you believe there are any days with no overdose calls at all? Explain why or why not.
 
-A1.The day in 2022 that had the most overdose calls was July 14, with 23. There are no days with no overdose calls, based upon looking at the data.
+A1.
 
 ```{r}
-calls_per_date <- BaltimoreData_Sheet1 |>
-  group_by(date) |>
-  summarise(num_calls = n(), .groups = "drop")
-max_calls_2022 <- calls_per_date |>
-  filter(year(date) == 2022) |>
-  arrange(desc(num_calls)) |>
-  slice(1)
-print(max_calls_2022)
 ```
 
 Q2. You want to understand if there's a pattern in the day of the week that overdose calls are made. Add a column to your dataframe that displays what day of the week each date represents. You should search for how to do that using lubridate. Then write code to calculate the number of calls for each day of the week, and add a column to that result that calculates the percentage of all calls that occurred on each day of the week (so you want a dataframe with the day of the week, total number of calls and the percentage of calls on that day out of the total number of all calls). Describe your findings to me.
 
-A2. Based upon the findings here, it looks like days on the weekend have the most reported calls. Saturday has the most, with over 15 percent of the calls coming on that day.
+A2.
 
 ```{r}
-BaltimoreData_Sheet1 <- BaltimoreData_Sheet1 |>
-  mutate(day_of_week = wday(date, label = TRUE, abbr = FALSE))
-calls_per_weekday <- BaltimoreData_Sheet1 |>
-  group_by(day_of_week) |>
-  summarise(total_calls = n(), .groups = "drop") |>
-  mutate(percentage = (total_calls / sum(total_calls)) * 100)  
-print(calls_per_weekday)
 ```
 
 Q3. Now let's look at locations. Which ones have the most calls? How would you describe them (feel free to search for more information on them)? Is there anything about the structure of the original data that might make you less confident in the counts by location or date?
 
-A3. One location that has the most calls, with 36, is on Silver Spring road. Interestingly, it seems like a regular building or house. The next two are police precincts, which make more sense. However, it definitely does make me weary and less confident about the original data structure considering that top location doesn't make much sense.
+A3.
 
 ```{r}
-calls_per_location <- BaltimoreData_Sheet1 |>
-  group_by(loc) |>
-  summarise(total_calls = n(), .groups = "drop") |>
-  arrange(desc(total_calls)) 
-head(calls_per_location, 10) 
+
 ```
 
 Q4. What's the best story idea or question you've seen as a result of the work you've done in this lab?
 
-A4. One good story idea could be why certain locations are more prevalent for drug overdoses than others. Another could be why certain days have more overdoses than others, and if there is a behavioral or psychological reasoning for that.
+A4.
