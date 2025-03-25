@@ -52,7 +52,7 @@ In this notebook, we are reverse engineering five sentences from the story.
 ### Sentence 1
 
 * **Sentence text**: "Overall, 51.7 percent of all contributions by WNBA owners went to Democrats, with 42.3 percent going to Republicans."
-* **Analysis summary**: What I actually found when I ran this code was nearly the opposite of this sentence. I found that about 51.7% of the contributions from WNBA owners went to Republicans, with about 43.8% going to Democrats. Then there were other minor percentages that went to bipartisans. 
+* **Analysis summary**: What I actually found when I ran this code was nearly the opposite of this sentence. I found that about 51.7% of the contributions from WNBA owners went to Republicans, with about 43.8% going to Democrats. Then there were other minor percentages that went to bipartisan groups.
 
 ```{r}
 # Put code to reverse engineer sentence here
@@ -66,6 +66,7 @@ wnba_owners <- SportsDonations_sports_political_donations |>
 
 # Display results of code below this codeblock
 
+SportsDonations_sports_political_donations <- 
 ```
 
 ### Sentence 2
@@ -75,6 +76,7 @@ wnba_owners <- SportsDonations_sports_political_donations |>
 
 ```{r}
 # Put code to reverse engineer sentence here
+
 
 # Display results of code below this codeblock
 
