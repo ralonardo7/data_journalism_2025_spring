@@ -65,8 +65,7 @@ wnba_owners <- SportsDonations_sports_political_donations |>
   mutate(Percentage = (Total_Amount / sum(Total_Amount)) * 100)
 
 # Display results of code below this codeblock
-
-SportsDonations_sports_political_donations <- 
+wnba_owners
 ```
 
 ### Sentence 2
