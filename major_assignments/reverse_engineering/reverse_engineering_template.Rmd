@@ -61,7 +61,7 @@ SportsDonations_sports_political_donations <- SportsDonations_sports_political_d
 wnba_owners <- SportsDonations_sports_political_donations |>
   filter(league == "WNBA") |>
   group_by(party) |>
-  summarise(Total_Amount = sum(amount, na.rm = TRUE)) |>
+  summarize(Total_Amount = sum(amount, na.rm = TRUE)) |>
   mutate(Percentage = (Total_Amount / sum(Total_Amount)) * 100)
 
 # Display results of code below this codeblock
@@ -70,51 +70,95 @@ wnba_owners
 
 ### Sentence 2
 
-* **Sentence text**: [Paste in sentence to engineer here]
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **Sentence text**: "Thirteen owners have contributed directly to Trump’s campaign or Trump super PACs in the 2020 election cycle, with contributions adding up to $1,746,423."
+* **Analysis summary**: My analysis yielded a very similar result, but it wasn't exactly matching. My analysis showed that it was 12 unique owners, and the contributions added up to $1,544,421.
 
 ```{r}
 # Put code to reverse engineer sentence here
-
-
+SportsDonations_sports_political_donations <- SportsDonations_sports_political_donations |>
+  clean_names()
+trump_keywords <- c("Trump", "Donald J. Trump", "Donald J Trump", "Make America Great Again", 
+                    "Donald Trump for President", "Trump Victory", "Save America", "Trump MAGA Committee")
+trump_donations_2020 <- SportsDonations_sports_political_donations |>
+  filter(election_year == 2020) |>
+  filter(str_detect(tolower(recipient), 
+                    paste(tolower(trump_keywords), collapse = "|"))) |>
+  filter(!is.na(owner)) 
+trump_contributions_summary <- trump_donations_2020 |>
+  summarize(
+    unique_owners = n_distinct(owner),
+    total_contributed = sum(amount, na.rm = TRUE)
+  )
 # Display results of code below this codeblock
-
+trump_contributions_summary
 ```
 
 ### Sentence 3
 
-* **Sentence text**: [Paste in sentence to engineer here]
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **Sentence text**: "By contrast, 20 owners have contributed directly to Biden or Biden’s super PACs, though at smaller totals, with overall contributions equaling $405,745."
+* **Analysis summary**: This analysis also yielded pretty similar results, but my code found that 21 owners contributed directly, with overall contributions adding up to $308,545.
 
 ```{r}
 # Put code to reverse engineer sentence here
-
+biden_keywords <- c("Biden", "Joe Biden", "Joseph R. Biden", "Biden for President", 
+                    "Unite the Country", "Biden Victory Fund", "Future Forward USA")
+biden_donations_2020 <- SportsDonations_sports_political_donations |>
+  filter(election_year == 2020) |>
+  filter(str_detect(tolower(recipient), 
+                    paste(tolower(biden_keywords), collapse = "|"))) |>
+  filter(!is.na(owner))
+biden_contributions_summary <- biden_donations_2020 |>
+  summarize(
+    unique_owners = n_distinct(owner),
+    total_contributed = sum(amount, na.rm = TRUE)
+  )
 # Display results of code below this codeblock
-
+biden_contributions_summary
 ```
 
 ### Sentence 4
 
-* **Sentence text**: [Paste in sentence to engineer here]
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **Sentence text**: "A relatively small group of donors makes up a huge chunk of the overall donation data. Forty owners account for more than $40 million — more than 85 percent of all contributions."
+* **Analysis summary**: This analysis below basically matches exactly what the text above says. The top 40 contributing owners spend more than 41.5 million dollars, and account for 89% of the total spending.
 
 ```{r}
 # Put code to reverse engineer sentence here
-
+SportsDonations_sports_political_donations <- SportsDonations_sports_political_donations |>
+  clean_names()
+owner_totals <- SportsDonations_sports_political_donations |>
+  filter(!is.na(owner)) |>
+  group_by(owner) |>
+  summarize(owner_total = sum(amount, na.rm = TRUE)) |>
+  arrange(desc(owner_total))
+top_40_owners <- owner_totals |>
+  slice_max(order_by = owner_total, n = 40)
+top_40_total <- sum(top_40_owners$owner_total, na.rm = TRUE)
+all_owners_total <- sum(owner_totals$owner_total, na.rm = TRUE)
+percent_top_40 <- (top_40_total / all_owners_total) * 100
 # Display results of code below this codeblock
-
+tibble(
+  top_40_total = top_40_total,
+  all_owners_total = all_owners_total,
+  percent_top_40 = percent_top_40
+)
 ```
 
 ### Sentence 5
 
-* **Sentence text**: [Paste in sentence to engineer here]
-* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+* **Sentence text**: "And looking specifically at these big spenders, it’s clear where their allegiances lie: 77.7 percent of that $40 million went to Republican causes or candidates, with 18.8 percent going to Democrats."
+* **Analysis summary**: This analysis that I ran below is pretty close to matching the sentence above. I found that about 20.79% of the 40 million dollars went to Democrats and about 75.8% went to Republicans. This data could be a bit off depending on what the article counted as belonging to the various bipartisan groups.
 
 ```{r}
 # Put code to reverse engineer sentence here
-
+top_40_owner_names <- top_40_owners$owner
+top_40_donations <- SportsDonations_sports_political_donations |>
+  filter(owner %in% top_40_owner_names)
+top_40_party_breakdown <- top_40_donations |>
+  group_by(party) |>
+  summarize(total = sum(amount, na.rm = TRUE)) |>
+  mutate(percentage = (total / sum(total)) * 100)
 # Display results of code below this codeblock
-
+top_40_party_breakdown
 ```
 
 -30-
