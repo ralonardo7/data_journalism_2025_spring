@@ -3,6 +3,8 @@ library(ggplot2)
 
 df <- play_off_box_scores_2010_2024
 
+#Q1. Which players have had the greatest impact in a playoff run?
+
 player_impact_summary <- df |>
   group_by(season_year, teamSlug, personName) |>
   summarize(
@@ -40,4 +42,46 @@ ggplot(top_player_2024, aes(x = reorder(teamSlug, impact_score), y = impact_scor
 
 #After taking a look at the data, it appears as though I'll be able to do a decent amount with this information. There are a whopping 33 columns, all of which contain playoff data I can use. There are 31,185 columns of player performances in the playoffs over a course of 15 years. Some of the flaws include lack of scoring by quarter, or with a certain amount of time remaining in the game. Because of this, I can't really look at clutch statistics for various players over the end of the game, which is something that I wanted to do and is integral to playoff success. The other limits is that is is only 15 years worth of data. If there were more, we could compare eras of NBA playoff play. As for terms I needed to find out, there were things like teamId and gameId that I needed to look more into, but they made sense after my initial research. 
 
+#Q2: Which NBA playoff players are the most efficient scorers under pressure (2010–2024)?
 
+library(dplyr)
+library(ggplot2)
+
+df <- play_off_box_scores_2010_2024
+
+min_minutes_played <- 1000 
+
+efficiency_summary <- df |>
+  filter(minutes >= min_minutes_played) |>
+  group_by(season_year, teamSlug, personName) |>
+  summarize(
+    total_points = sum(points, na.rm = TRUE),
+    fieldGoalsMade = sum(fieldGoalsMade, na.rm = TRUE),
+    fieldGoalsAttempted = sum(fieldGoalsAttempted, na.rm = TRUE),
+    threePointersMade = sum(threePointersMade, na.rm = TRUE),
+    threePointersAttempted = sum(threePointersAttempted, na.rm = TRUE),
+    freeThrowsMade = sum(freeThrowsMade, na.rm = TRUE),
+    freeThrowsAttempted = sum(freeThrowsAttempted, na.rm = TRUE),
+    games_played = n(),
+    .groups = "drop"
+  ) |>
+  mutate(
+
+    fg_percentage = fieldGoalsMade / fieldGoalsAttempted,
+    threeP_percentage = threePointersMade / threePointersAttempted,
+    ft_percentage = freeThrowsMade / freeThrowsAttempted,
+
+    efficiency_score = fg_percentage * 0.4 + threeP_percentage * 0.3 + ft_percentage * 0.3
+  )
+
+ranked_efficiency_players <- efficiency_summary |>
+  group_by(season_year, teamSlug) |>
+  arrange(desc(efficiency_score)) |>
+  mutate(team_rank = row_number()) |>
+  ungroup()
+
+top_efficiency_per_team <- ranked_efficiency_players |>
+  filter(team_rank <= 3)
+
+top_efficiency_2024 <- ranked_efficiency_players |>
+  filter(season_year == 2024, team_rank == 1)
