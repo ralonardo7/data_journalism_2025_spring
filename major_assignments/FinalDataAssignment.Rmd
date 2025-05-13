@@ -8,6 +8,8 @@ output: html_document
 ```{r}
 library(dplyr)
 library(ggplot2)
+library(readr)
+read_csv("play_off_box_scores_2010_2024.csv")
 df <- play_off_box_scores_2010_2024
 ```
 
@@ -55,8 +57,8 @@ In this question, I wanted to go about figuring out which players had the bigges
 library(dplyr)
 library(ggplot2)
 
-df <- play_off_box_scores_2010_2024 |>`
-  mutate(minutes = as.numeric(minutes))  
+df <- play_off_box_scores_2010_2024 |>
+  mutate(minutes = as.numeric(minutes))
 
 seasonal_performance <- df |>
   group_by(personName, season_year) |>
@@ -82,12 +84,10 @@ drop_offs <- seasonal_performance |>
   group_by(personName) |>
   mutate(
     next_year = lead(season_year),
-    next_score = lead(performance_score)
-  ) |>
-  filter(!is.na(next_score)) |> 
-  mutate(
+    next_score = lead(performance_score),
     dropoff = performance_score - next_score
   ) |>
+  filter(!is.na(dropoff)) |>
   ungroup()
 
 biggest_dropoffs <- drop_offs |>
